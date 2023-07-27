@@ -24,7 +24,7 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="bg-medium-grey flex flex-col items-center justify-center fixed top-0 left-0 w-screen h-screen">
       <form
-        className="flex flex-col items-center gap-4 w-full md:border rounded-xl border-very-light-grey p-4 max-w-[425px]"
+        className="flex flex-col items-center gap-4 w-full md:border rounded-xl border-very-light-grey p-8 max-w-[425px]"
         onSubmit={handleSubmit}
       >
         {" "}
@@ -32,12 +32,12 @@ const RegisterPage: React.FC = () => {
           <img src={Logo} alt="logo" className="w-[70px] h-[70px]" />
           {/* <span className="text-white text-sm font-bold">ChatterBox</span> */}
         </div>
-        <h1 className="text-white font-bold">Register</h1>
-        <p className="text-input-medium text-almost-white">
+        <h1 className="text-white font-bold text-[24px]">Register</h1>
+        {/* <p className="text-input-medium text-almost-white">
           Ready to join our vibrant community? Sign up now and become a part of
           our ever-growing family. Let's get started on creating meaningful
           connections together!
-        </p>
+        </p> */}
         <FormInput
           icon={RiUserFill}
           placeholder="Name"
