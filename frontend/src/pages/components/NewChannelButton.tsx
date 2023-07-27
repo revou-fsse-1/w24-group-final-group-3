@@ -26,7 +26,7 @@ export default function NewChannelButton() {
             <input
               type="text"
               placeholder="Channel name"
-              className="bg-light-grey h-[48px] p-4 rounded-md outline-none w-full text-white placeholder:text-text-grey text-body-regular placeholder:text-body-regular"
+              className="bg-light-grey h-[48px] p-4 rounded-md outline-none w-full text-white placeholder:text-very-light-grey text-body-regular placeholder:text-body-regular"
             />
 
             <textarea
@@ -35,7 +35,7 @@ export default function NewChannelButton() {
               placeholder="Channel description"
               cols={30}
               rows={4}
-              className="bg-light-grey p-4 rounded-md outline-none w-full text-white placeholder:text-text-grey text-body-regular placeholder:text-body-regular resize-none"
+              className="bg-light-grey p-4 rounded-md outline-none w-full text-white placeholder:text-very-light-grey text-body-regular placeholder:text-body-regular resize-none"
             ></textarea>
             <button className="bg-blue py-1 px-6 rounded-lg text-white ml-auto">
               Save

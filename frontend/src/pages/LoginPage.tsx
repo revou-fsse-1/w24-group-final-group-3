@@ -1,11 +1,13 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import FormInput from './components/FormInput';
-import { RiLockPasswordFill, RiMailFill } from 'react-icons/ri'
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import FormInput from "./components/FormInput";
+import Logo from "../assets/logo.svg";
+
+import { RiLockPasswordFill, RiMailFill } from "react-icons/ri";
 
 const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -20,13 +22,20 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className='bg-medium-grey flex flex-col items-center justify-center w-screen h-screen'>
-      <div className='bg-medium-grey rounded-xl border-white border shadow-xl p-10 max-w-50'>
-        <h1 className='text-white font-bold'>Login</h1>
-        <form className='p-3' onSubmit={handleSubmit}>
+    <div className="bg-medium-grey flex flex-col items-center justify-center fixed top-0 left-0 w-screen h-screen">
+      <form
+        className="flex flex-col items-center gap-4 w-full md:border rounded-xl border-very-light-grey p-4 max-w-[425px]"
+        onSubmit={handleSubmit}
+      >
+        <div className="flex flex-col items-center">
+          <img src={Logo} alt="logo" className="w-[70px] h-[70px]" />
+          {/* <span className="text-white text-sm font-bold">ChatterBox</span> */}
+        </div>
+        <h1 className="text-white text-body-bold">Login</h1>
+
         <FormInput
           icon={RiMailFill}
-          placeholder="    Email"
+          placeholder="Email"
           type="text"
           name="email"
           value={formData.email}
@@ -34,18 +43,27 @@ const LoginPage: React.FC = () => {
         />
         <FormInput
           icon={RiLockPasswordFill}
-          placeholder="    Password"
+          placeholder="Password"
           type="password"
           name="password"
           value={formData.password}
           onChange={handleInputChange}
         />
-        <button className='text-white bg-blue rounded-md border font-semibold w-full' type="submit">Login</button>
-        <div className='py-4 text-center'>
-          <p className='text-white font-thin'>Not a member? Register</p>
+        <button
+          className="text-white bg-blue rounded-md outline-none h-[40px] font-semibold w-full active:bg-blue-hover"
+          type="submit"
+        >
+          Login
+        </button>
+        <div className="py-4 text-center">
+          <p className="text-very-light-grey text-input-medium w-full text-center">
+            Don't have an account yet?{" "}
+            <a href="./register" className="text-blue hover:underline">
+              Register
+            </a>
+          </p>
         </div>
-        </form>
-      </div>
+      </form>
     </div>
   );
 };

@@ -6,7 +6,7 @@ export const theme = {
     "almost-white": "#E0E0E0",
     black: "#0B090C",
     "text-light-grey": "#BDBDBD",
-    "text-grey": "#828282",
+    "very-light-grey": "#828282",
 
     "light-grey": "#3C393F",
     "medium-grey": "#252329",

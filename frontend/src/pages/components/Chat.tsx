@@ -15,8 +15,12 @@ export default function Chat() {
       {/* NAME, TIME, AND MESSAGE */}
       <div>
         <div className="flex gap-6 mb-1">
-          <span className="text-body-bold text-text-grey">Nellie Francis</span>
-          <p className="text-time-small text-text-grey">yesterday at 2:29AM</p>
+          <span className="text-body-bold text-very-light-grey">
+            Nellie Francis
+          </span>
+          <p className="text-time-small text-very-light-grey">
+            yesterday at 2:29AM
+          </p>
         </div>
         <p className="text-white text-left">
           Lorem Ipsum is simply dummy text of the printing and typesetting
