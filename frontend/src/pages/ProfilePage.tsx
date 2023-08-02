@@ -1,14 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import IconUserSquare from "../assets/icon-user-square.svg";
 import Navbar2 from "./components/Nabvar2";
 import { Link, useParams } from "react-router-dom";
+import { getUserData } from "../apiService";
+
+interface UserData {
+  id: string;
+  email: string;
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  imageURL: string;
+}
 
 export default function ProfilePage() {
-  const { userID } = useParams();
+  const { userID = "" } = useParams<{ userID: string }>();
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-    console.log(userID);
-  }, []);
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("authToken"); // Assuming you stored the token in localStorage after login
+        if (token) {
+          const response = await getUserData(userID, token);
+          setUserData(response.data);
+        }
+      } catch (error) {
+        // Handle error if necessary
+      }
+    };
+
+    fetchUserData();
+  }, [userID]);
 
   return (
     // PAGE CONTIANER
@@ -52,7 +76,7 @@ export default function ProfilePage() {
             <div className="w-[60px] h-[60px] overflow-hidden rounded-lg">
               <img
                 className="object-cover w-full h-full"
-                src={IconUserSquare}
+                src={userData?.imageURL || IconUserSquare}
                 alt="icon-user-square"
               />
             </div>
@@ -64,7 +88,9 @@ export default function ProfilePage() {
             <span className="w-[200px] text-input-medium text-text-grey text-left">
               NAME
             </span>
-            <span className="text-white text-body-regular">Arya Imanuel</span>
+            <span className="text-white text-body-regular">
+              {userData?.firstName} {userData?.lastName}
+            </span>
           </div>
           <hr className="border-light-grey" />
 
@@ -73,7 +99,9 @@ export default function ProfilePage() {
             <span className="w-[200px] text-input-medium text-text-grey text-left">
               USERNAME
             </span>
-            <span className="text-white text-body-regular">aryaimanuel</span>
+            <span className="text-white text-body-regular">
+              {userData?.username}
+            </span>
           </div>
           <hr className="border-light-grey" />
 
@@ -82,7 +110,7 @@ export default function ProfilePage() {
               EMAIL
             </span>
             <span className="text-white text-body-regular">
-              aryafe@mail.com
+              {userData?.email}
             </span>
           </div>
           <hr className="border-light-grey" />
@@ -91,7 +119,9 @@ export default function ProfilePage() {
             <span className="w-[200px] text-input-medium text-text-grey text-left">
               PASSWORD
             </span>
-            <span className="text-white text-body-regular">********</span>
+            <span className="text-white text-body-regular">
+              {userData?.password}
+            </span>
           </div>
         </div>
       </section>
