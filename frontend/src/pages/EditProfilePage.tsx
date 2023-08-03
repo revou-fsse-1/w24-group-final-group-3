@@ -1,22 +1,25 @@
 import Navbar2 from "./components/Navbar2";
 import IconChevronDownBlue from "../assets/icon-chevron-down-blue.svg";
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+
+import { useState } from "react";
 // import { useState } from "react";
 
 interface RequestOption {
-  method: string;
+  method: "PUT";
   headers: HeadersInit;
   redirect: "follow";
+  body: string;
 }
 interface UserData {
   email: string;
   firstName: string;
-  imageURL: string;
   lastName: string;
   password: string;
   username: string;
 }
+
+const BACKEND_URL =
+  "https://w24-group-final-group-3-production.up.railway.app/";
 
 export default function EditProfilePage() {
   // const [photoUrlInput, setPhotoUrlInput] = useState("");
@@ -28,32 +31,24 @@ export default function EditProfilePage() {
 
   const [userData, setUserData] = useState<UserData>();
 
-  const BACKEND_URL =
-    "https://w24-group-final-group-3-production.up.railway.app/";
-
   const myId = localStorage.getItem("userID");
   const access_token = localStorage.getItem("access_token");
   const requestOptions: RequestOption = {
     method: "PUT",
     headers: { authorization: `Bearer ${access_token}` },
     redirect: "follow",
+    body: "",
   };
 
-  const fetchUserData = () => {
-    fetch(BACKEND_URL + "user/" + `${myId}`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        try {
-          setUserData(result);
-        } catch (error) {
-          console.log(error);
-        }
-      });
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, [myId]);
+  fetch(BACKEND_URL + "user/" + `${myId}`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      try {
+        setUserData(result);
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
   return (
     // PAGE
@@ -107,6 +102,7 @@ export default function EditProfilePage() {
                 name="firstName"
                 id="firstName"
                 placeholder="Enter your profile image url from unsplash..."
+                value={userData?.firstName}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -121,6 +117,7 @@ export default function EditProfilePage() {
                 name="lastName"
                 id="lastName"
                 placeholder="Enter your profile image url from unsplash..."
+                value={userData?.lastName}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -135,6 +132,7 @@ export default function EditProfilePage() {
                 name="username"
                 id="username"
                 placeholder="Enter your username..."
+                value={userData?.username}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -149,6 +147,7 @@ export default function EditProfilePage() {
                 name="email"
                 id="email"
                 placeholder="Enter your email..."
+                value={userData?.email}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -163,11 +162,12 @@ export default function EditProfilePage() {
                 name="phopasswordto"
                 id="password"
                 placeholder="Enter your new password..."
+                value={userData?.password}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
             <button
-              type="button"
+              type="submit"
               className="bg-blue mt-4 py-2 px-6 rounded-lg text-white text-body-medium mr-auto active:bg-blue-hover outline-none w-full md:max-w-[100px]"
             >
               Save

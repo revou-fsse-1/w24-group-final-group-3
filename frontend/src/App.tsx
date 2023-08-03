@@ -21,7 +21,7 @@ const App: React.FC = () => {
         <Route path="/channel" element={<ChannelPage />} />
         <Route path="/channel/:channelID" element={<ChannelPage />} />
         <Route path="/profile/:userID" element={<ProfilePage />} />
-        <Route path="/editprofile/:userID" element={<EditProfilePage />} />
+        <Route path="/editprofile/" element={<EditProfilePage />} />
       </Routes>
     </Router>
   );
