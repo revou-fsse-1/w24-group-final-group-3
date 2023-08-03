@@ -1,7 +1,7 @@
 import Navbar2 from "./components/Navbar2";
 import IconChevronDownBlue from "../assets/icon-chevron-down-blue.svg";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useState } from "react";
 
 interface RequestOption {
@@ -26,7 +26,6 @@ export default function EditProfilePage() {
   // const [emailInput, setEmailInput] = useState("");
   // const [passwordInput, setPasswordInput] = useState("");
 
-  const { userID } = useParams();
   const [userData, setUserData] = useState<UserData>();
 
   const BACKEND_URL =
@@ -39,6 +38,22 @@ export default function EditProfilePage() {
     headers: { authorization: `Bearer ${access_token}` },
     redirect: "follow",
   };
+
+  const fetchUserData = () => {
+    fetch(BACKEND_URL + "user/" + `${myId}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        try {
+          setUserData(result);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [myId]);
 
   return (
     // PAGE
