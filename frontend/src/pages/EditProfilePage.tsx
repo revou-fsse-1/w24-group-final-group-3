@@ -1,6 +1,7 @@
 import Navbar2 from "./components/Navbar2";
 import IconChevronDownBlue from "../assets/icon-chevron-down-blue.svg";
 import { useState } from "react";
+
 // import { useState } from "react";
 interface UserData {
   email: string;
@@ -50,10 +51,11 @@ export default function EditProfilePage() {
       fetch(`${BACKEND_URL}/user/${userID}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestData),
+        redirect: "follow",
       })
         .then((response) => response.json())
         .then((data) => {
@@ -97,19 +99,6 @@ export default function EditProfilePage() {
               <h3 className="text-text-grey text-left text-input-medium leading-tight">
                 Changes will be reflected to every services
               </h3>
-            </div>
-            {/* PHOTO */}
-            <div className="w-full flex flex-col items-start">
-              <label htmlFor="photo" className="text-text-grey">
-                Photo
-              </label>
-              <input
-                type="text"
-                name="photo"
-                id="photo"
-                placeholder="Enter your profile image URL from Unsplash..."
-                className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
-              />
             </div>
 
             {/* FIRST NAME */}
