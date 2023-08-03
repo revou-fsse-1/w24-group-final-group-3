@@ -1,15 +1,7 @@
 import Navbar2 from "./components/Navbar2";
 import IconChevronDownBlue from "../assets/icon-chevron-down-blue.svg";
-
 import { useState } from "react";
 // import { useState } from "react";
-
-interface RequestOption {
-  method: "PUT";
-  headers: HeadersInit;
-  redirect: "follow";
-  body: string;
-}
 interface UserData {
   email: string;
   firstName: string;
@@ -22,33 +14,58 @@ const BACKEND_URL =
   "https://w24-group-final-group-3-production.up.railway.app/";
 
 export default function EditProfilePage() {
-  // const [photoUrlInput, setPhotoUrlInput] = useState("");
-  // const [firstNameInput, setFirstNameInput] = useState("");
-  // const [lastNameInput, setLastNameInput] = useState("");
-  // const [usernameInput, setUsernameInput] = useState("");
-  // const [emailInput, setEmailInput] = useState("");
-  // const [passwordInput, setPasswordInput] = useState("");
+  const [formData, setFormData] = useState<UserData>({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    username: "",
+  });
 
-  const [userData, setUserData] = useState<UserData>();
-
-  const myId = localStorage.getItem("userID");
-  const access_token = localStorage.getItem("access_token");
-  const requestOptions: RequestOption = {
-    method: "PUT",
-    headers: { authorization: `Bearer ${access_token}` },
-    redirect: "follow",
-    body: "",
+  // Function to handle form input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  fetch(BACKEND_URL + "user/" + `${myId}`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
-      try {
-        setUserData(result);
-      } catch (error) {
-        console.log(error);
-      }
-    });
+  // Function to handle the form submission
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Get the user ID and token from local storage
+    const userID = localStorage.getItem("userID");
+    const access_token = localStorage.getItem("access_token");
+
+    if (userID && access_token) {
+      // Prepare the request data with the user ID and token
+      const requestData = {
+        ...formData,
+        userID,
+      };
+
+      // Make the PUT request to update the user profile
+      fetch(`${BACKEND_URL}/user/${userID}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Handle the response from the backend if needed
+          console.log("Profile updated successfully", data);
+        })
+        .catch((error) => {
+          // Handle errors if any
+          console.error("Error updating profile:", error);
+        });
+    }
+  };
 
   return (
     // PAGE
@@ -69,7 +86,10 @@ export default function EditProfilePage() {
             Back
           </button>
 
-          <form className="flex flex-col items-start p-4 md:p-10 bg-medium-grey rounded-2xl md:border border-text-grey w-full max-w-[768px] gap-6">
+          <form
+            className="flex flex-col items-start p-4 md:p-10 bg-medium-grey rounded-2xl md:border border-text-grey w-full max-w-[768px] gap-6"
+            onSubmit={handleSubmit}
+          >
             <div className="flex flex-col items-start">
               <h2 className="text-body-regular text-white text-[24px] mb-2">
                 Change Info
@@ -87,7 +107,7 @@ export default function EditProfilePage() {
                 type="text"
                 name="photo"
                 id="photo"
-                placeholder="Enter your profile image url from unsplash..."
+                placeholder="Enter your profile image URL from Unsplash..."
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -101,8 +121,9 @@ export default function EditProfilePage() {
                 type="text"
                 name="firstName"
                 id="firstName"
-                placeholder="Enter your profile image url from unsplash..."
-                value={userData?.firstName}
+                placeholder="Enter your first name..."
+                value={formData.firstName}
+                onChange={handleChange}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -116,8 +137,9 @@ export default function EditProfilePage() {
                 type="text"
                 name="lastName"
                 id="lastName"
-                placeholder="Enter your profile image url from unsplash..."
-                value={userData?.lastName}
+                placeholder="Enter your last name..."
+                value={formData.lastName}
+                onChange={handleChange}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -132,7 +154,8 @@ export default function EditProfilePage() {
                 name="username"
                 id="username"
                 placeholder="Enter your username..."
-                value={userData?.username}
+                value={formData.username}
+                onChange={handleChange}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -147,7 +170,8 @@ export default function EditProfilePage() {
                 name="email"
                 id="email"
                 placeholder="Enter your email..."
-                value={userData?.email}
+                value={formData.email}
+                onChange={handleChange}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -159,10 +183,11 @@ export default function EditProfilePage() {
               </label>
               <input
                 type="password"
-                name="phopasswordto"
+                name="password"
                 id="password"
                 placeholder="Enter your new password..."
-                value={userData?.password}
+                value={formData.password}
+                onChange={handleChange}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
