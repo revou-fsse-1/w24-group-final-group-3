@@ -1,6 +1,22 @@
 import Navbar2 from "./components/Navbar2";
 import IconChevronDownBlue from "../assets/icon-chevron-down-blue.svg";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
 // import { useState } from "react";
+
+interface RequestOption {
+  method: string;
+  headers: HeadersInit;
+  redirect: "follow";
+}
+interface UserData {
+  email: string;
+  firstName: string;
+  imageURL: string;
+  lastName: string;
+  password: string;
+  username: string;
+}
 
 export default function EditProfilePage() {
   // const [photoUrlInput, setPhotoUrlInput] = useState("");
@@ -9,6 +25,20 @@ export default function EditProfilePage() {
   // const [usernameInput, setUsernameInput] = useState("");
   // const [emailInput, setEmailInput] = useState("");
   // const [passwordInput, setPasswordInput] = useState("");
+
+  const { userID } = useParams();
+  const [userData, setUserData] = useState<UserData>();
+
+  const BACKEND_URL =
+    "https://w24-group-final-group-3-production.up.railway.app/";
+
+  const myId = localStorage.getItem("userID");
+  const access_token = localStorage.getItem("access_token");
+  const requestOptions: RequestOption = {
+    method: "PUT",
+    headers: { authorization: `Bearer ${access_token}` },
+    redirect: "follow",
+  };
 
   return (
     // PAGE
