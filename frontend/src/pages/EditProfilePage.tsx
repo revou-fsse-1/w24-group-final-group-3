@@ -24,6 +24,10 @@ export default function EditProfilePage(props: {
   setUserDetailList: React.Dispatch<React.SetStateAction<UserData[]>>;
 }) {
   const { userID } = useParams();
+
+  console.log("Props:", props);
+  console.log("userID:", userID);
+
   const [firstNameInput, setFirstNameInput] = useState<string>(
     props.userDetail.firstName
   );
