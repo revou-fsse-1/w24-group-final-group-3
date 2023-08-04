@@ -1,6 +1,7 @@
 import Navbar2 from "./components/Navbar2";
 import IconChevronDownBlue from "../assets/icon-chevron-down-blue.svg";
-import { useState } from "react";
+import { SyntheticEvent, useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 // import { useState } from "react";
 interface UserData {
@@ -11,62 +12,111 @@ interface UserData {
   username: string;
 }
 
-const BACKEND_URL =
-  "https://w24-group-final-group-3-production.up.railway.app/";
+interface RequestOption {
+  method: "PUT";
+  headers: HeadersInit;
+  body: string;
+  redirect: "follow";
+}
 
-export default function EditProfilePage() {
-  const [formData, setFormData] = useState<UserData>({
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-    username: "",
-  });
+export default function EditProfilePage(props: {
+  userDetail: UserData;
+  setUserDetailList: React.Dispatch<React.SetStateAction<UserData[]>>;
+}) {
+  const { userID } = useParams();
+  const [firstNameInput, setFirstNameInput] = useState<string>(
+    props.userDetail.firstName
+  );
+  const [lastNameInput, setLastNameInput] = useState<string>(
+    props.userDetail.lastName
+  );
+  const [emailInput, setEmailInput] = useState<string>(props.userDetail.email);
+  const [passwordInput, setPasswordInput] = useState<string>(
+    props.userDetail.password
+  );
+  const [usernameInput, setUsernameInput] = useState<string>(
+    props.userDetail.username
+  );
 
-  // Function to handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    setFirstNameInput(props.userDetail.firstName);
+    setLastNameInput(props.userDetail.lastName);
+    setEmailInput(props.userDetail.email);
+    setPasswordInput(props.userDetail.password);
+    setUsernameInput(props.userDetail.username);
+  }, [props.userDetail, userID]);
 
-  // Function to handle the form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFirstNameInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setFirstNameInput(event.target.value);
+    },
+    []
+  );
+  const handleLastNameInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setLastNameInput(event.target.value);
+    },
+    []
+  );
+  const handleEmailInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setEmailInput(event.target.value);
+    },
+    []
+  );
+  const handlePasswordInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPasswordInput(event.target.value);
+    },
+    []
+  );
+  const handleUsernameInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setUsernameInput(event.target.value);
+    },
+    []
+  );
+
+  const access_token = localStorage.getItem("access_token");
+  const BACKEND_URL =
+    "https://w24-group-final-group-3-production.up.railway.app/";
+
+  const updateUser = (e: SyntheticEvent) => {
     e.preventDefault();
-
-    // Get the user ID and token from local storage
-    const userID = localStorage.getItem("userID");
-    const access_token = localStorage.getItem("access_token");
-
-    if (userID && access_token) {
-      // Prepare the request data with the user ID and token
-      const requestData = {
-        ...formData,
-        userID,
-      };
-
-      // Make the PUT request to update the user profile
-      fetch(`${BACKEND_URL}/user/${userID}`, {
-        method: "PUT",
-        headers: {
-          authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-        redirect: "follow",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // Handle the response from the backend if needed
-          console.log("Profile updated successfully", data);
-        })
-        .catch((error) => {
-          // Handle errors if any
-          console.error("Error updating profile:", error);
-        });
+    if (
+      !firstNameInput ||
+      !lastNameInput ||
+      !passwordInput ||
+      !usernameInput ||
+      !emailInput
+    ) {
+      return;
     }
+    const myHeaders = {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${access_token}`,
+    };
+    const raw = JSON.stringify({
+      email: emailInput,
+      firstName: firstNameInput,
+      lastName: lastNameInput,
+      password: passwordInput,
+      username: usernameInput,
+    });
+
+    const requestOptions: RequestOption = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(BACKEND_URL + `user/${userID}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        props.setUserDetailList(result);
+      })
+      .catch((error) => console.log("error", error));
   };
 
   return (
@@ -88,10 +138,7 @@ export default function EditProfilePage() {
             Back
           </button>
 
-          <form
-            className="flex flex-col items-start p-4 md:p-10 bg-medium-grey rounded-2xl md:border border-text-grey w-full max-w-[768px] gap-6"
-            onSubmit={handleSubmit}
-          >
+          <form className="flex flex-col items-start p-4 md:p-10 bg-medium-grey rounded-2xl md:border border-text-grey w-full max-w-[768px] gap-6">
             <div className="flex flex-col items-start">
               <h2 className="text-body-regular text-white text-[24px] mb-2">
                 Change Info
@@ -111,8 +158,8 @@ export default function EditProfilePage() {
                 name="firstName"
                 id="firstName"
                 placeholder="Enter your first name..."
-                value={formData.firstName}
-                onChange={handleChange}
+                onChange={handleFirstNameInputChange}
+                value={firstNameInput && firstNameInput}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -127,8 +174,8 @@ export default function EditProfilePage() {
                 name="lastName"
                 id="lastName"
                 placeholder="Enter your last name..."
-                value={formData.lastName}
-                onChange={handleChange}
+                onChange={handleLastNameInputChange}
+                value={lastNameInput && lastNameInput}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -143,8 +190,8 @@ export default function EditProfilePage() {
                 name="username"
                 id="username"
                 placeholder="Enter your username..."
-                value={formData.username}
-                onChange={handleChange}
+                onChange={handleUsernameInputChange}
+                value={usernameInput && usernameInput}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -159,8 +206,8 @@ export default function EditProfilePage() {
                 name="email"
                 id="email"
                 placeholder="Enter your email..."
-                value={formData.email}
-                onChange={handleChange}
+                onChange={handleEmailInputChange}
+                value={emailInput && emailInput}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
@@ -175,13 +222,14 @@ export default function EditProfilePage() {
                 name="password"
                 id="password"
                 placeholder="Enter your new password..."
-                value={formData.password}
-                onChange={handleChange}
+                onChange={handlePasswordInputChange}
+                value={passwordInput && passwordInput}
                 className="bg-medium-grey w-full outline-none border border-text-grey rounded-lg text-white p-3 px-4 text-input-medium"
               />
             </div>
             <button
               type="submit"
+              onClick={updateUser}
               className="bg-blue mt-4 py-2 px-6 rounded-lg text-white text-body-medium mr-auto active:bg-blue-hover outline-none w-full md:max-w-[100px]"
             >
               Save
